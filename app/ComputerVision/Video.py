@@ -1,7 +1,8 @@
 import cv2 as cv
 
+
 class VideoStream:
-    
+
     def __init__(self, _VideoPath):
         self.VideoPath = _VideoPath
         self.VideoStream = cv.VideoCapture(self.VideoPath)
@@ -26,6 +27,11 @@ class VideoStream:
 
         self.ReleaseVideoStream()
 
-if __name__=='__main__':
-    o = VideoStream("C:\Baher\FiddleStick.mp4")
+    def destroy(self):
+        # Closes all the frames
+        cv.destroyAllWindows()
+
+
+if __name__ == '__main__':
+    o = VideoStream("Bird.mp4")
     o.DisplayVideo()

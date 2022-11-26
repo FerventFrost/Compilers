@@ -7,20 +7,21 @@ from app.compiler.yacc import *
 lexer = plylex.lex()
 parser = plyyacc.yacc()
 
-if __name__=='__main__':
+if __name__ == '__main__':
     if len(sys.argv) == 0 or sys.argv[0] == "yacc":
         while True:
             s = input('query> ')
-            if not s: break
+            if not s:
+                break
             s = s.lower()
             result = parser.parse(s)
 
     elif sys.argv[0] == "lex":
-        while(True):
+        while True:
             s = input("query> ")
             if not s:
                 break
-            s = s.lower() 
+            s = s.lower()
             lexer.input(s)
             print('=======Tokens=======')
             while True:
@@ -29,4 +30,3 @@ if __name__=='__main__':
                     break
                 print("\t", tok.value, "\t:\t", tok.type, sep="")
             print('====================')
-            
