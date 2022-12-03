@@ -9,6 +9,7 @@ result = None
 
 def extract(data_source:str) -> pd.DataFrame:
     source_type = __get_source_type(data_source)
+    data_source = data_source.split("::")[1]
     if source_type == 'CSV':
         data = __extract_from_csv(data_source)
     elif source_type == 'SQLITE':
@@ -61,6 +62,7 @@ def transform(data:pd.DataFrame, criteria:dict) -> pd.DataFrame:
 def load(data:pd.DataFrame, data_destination:str):
     global result
     source_type = __get_source_type(data_destination)
+    data_destination = data_destination.split("::")[1]
     if source_type == 'CSV':
         __load_to_csv(data, data_destination)
         result = 'Execution Done!'

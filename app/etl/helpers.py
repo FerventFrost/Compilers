@@ -5,19 +5,19 @@ import re
 def __get_source_type(data_source:str) -> str:
     if data_source == 'CONSOLE':
         return 'CONSOL'
-    elif re.search(r'.*\.csv(\.zip)?', data_source):   
+    elif re.search(r'^(csv|CSV)::', data_source):   
         return 'CSV'
-    elif re.search(r'.*\.db/\w+', data_source):
+    elif re.search(r'^(sqlite|SQLITE)::', data_source):
         return 'SQLITE'
-    elif re.search(r'Data Source.*', data_source):
+    elif re.search(r'^(mssql|MSSQL)::', data_source):
         return 'MSSQL'
-    elif re.search(r'.*\.html', data_source):   
+    elif re.search(r'^(html|HTML)::', data_source):   
         return 'HTML'
-    elif re.search(r'.*\.json', data_source):   
+    elif re.search(r'^(json|JSON)::', data_source):   
         return 'JSON'
-    elif re.search(r'.*\.xml', data_source):   
+    elif re.search(r'^(xml|XML)::', data_source):   
         return 'XML'
-    elif re.search( r'(.+\.xlsx)| (.+\.xls) | (.+\.xlsm)| (.+\.xlsb)| (.+\.odf)| (.+\.ods)| (.+\.odt)', data_source):   
+    elif re.search( r'^( (excel|EXCEL) | (xlsx|XLSX) | (xls|XLS) | (xlsm|XLSM)| (xlsb|XLSB) | (odf|ODF) | (ods|ODS) | (odt|ODT) )', data_source):   
         return 'EXCEL'
 
 
