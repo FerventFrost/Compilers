@@ -57,7 +57,8 @@ class DataSource:
         self.dfName = None
         self.SourcePath = _sorucePath.split("::")[1]
         self.DestinationPath = _destinationPath.split("::")[1]
-        self.Data = ""
+        #if it is not working change it from none to ""
+        self.Data = None
         self.Operation = _operation
         self.Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
 
