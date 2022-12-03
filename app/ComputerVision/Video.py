@@ -1,14 +1,14 @@
-import cv2 as cv
+import cv2
 
 
 class VideoStream:
 
     def __init__(self, _VideoPath):
         self.VideoPath = _VideoPath
-        self.VideoStream = cv.VideoCapture(self.VideoPath)
+        self.VideoStream = cv2.VideoCapture(self.VideoPath)
 
     def StopStreaming(self):
-        if cv.waitKey(1) & 0xFF == ord('d'):
+        if cv2.waitKey(1) & 0xFF == ord('d'):
             return True
         return False
 
@@ -17,7 +17,7 @@ class VideoStream:
 
     def DisplayFrame(self):
         ret, frame = self.VideoStream.read()
-        cv.imshow("Video", frame)
+        cv2.imshow("Video", frame)
 
     def DisplayVideo(self):
         while self.VideoStream.isOpened():
@@ -29,7 +29,7 @@ class VideoStream:
 
     def destroy(self):
         # Closes all the frames
-        cv.destroyAllWindows()
+        cv2.destroyAllWindows()      
 
 
 if __name__ == '__main__':

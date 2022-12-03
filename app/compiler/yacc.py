@@ -322,7 +322,7 @@ def p_assigns_end(p):
 
 def p_run(p):
     'run : RUN DATASOURCE'
-
+    p[2] = str(p[2]).replace("\\", "\\\\")
     p[0] = (
         "from app.ComputerVision.Video import VideoStream\n"
         f"StartStream = VideoStream('{p[2]}')\n"
