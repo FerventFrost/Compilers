@@ -29,24 +29,38 @@ def p_select(p):
 
     p[5] = str(p[5]).replace("\\", "\\\\")
     p[6] = str(p[6]).replace("\\", "\\\\")
+    # p[0] = (
+    #     f"from app import etl\n"
+    #     f"\n"
+    #     f"data = etl.extract('{p[5]}')\n"
+    #     f"data = etl.transform(\n"
+    #     f"   data,\n"
+    #     f"   {{\n"
+    #     f"        'COLUMNS':  {p[3]},\n"
+    #     f"        'DISTINCT': {p[2]},\n"
+    #     f"        'FILTER':   {p[7]},\n"
+    #     f"        'ORDER':    {p[8]},\n"
+    #     f"        'LIMIT':    {p[9]},\n"
+    #     f"    }}\n"
+    #     f")\n"
+    #     f"etl.load(data, '{p[6]}')\n"
+    # )
+    
     p[0] = (
-        f"from app import etl\n"
-        f"\n"
-        f"data = etl.extract('{p[5]}')\n"
-        f"data = etl.transform(\n"
-        f"   data,\n"
-        f"   {{\n"
+        f"from app.etl.DataSoruces.FlatFile import CsvDS\n"
+        f"DataOp = {{\n"
         f"        'COLUMNS':  {p[3]},\n"
         f"        'DISTINCT': {p[2]},\n"
         f"        'FILTER':   {p[7]},\n"
         f"        'ORDER':    {p[8]},\n"
-        f"        'LIMIT':    {p[9]},\n"
-        f"    }}\n"
-        f")\n"
-        f"etl.load(data, '{p[6]}')\n"
-    )
-    
+        f"        'LIMIT':    {p[9]},\n"   
+        "       }\n"
+        f"csv = CsvDS('{p[5]}' , '{p[6]}', DataOp)\n"
+        f"csv.extract()\n"
+        f"csv.DataSourceFunctions['Coulmns']\n"
+        f"csv.load()\n"
 
+    )
 
 ###########################
 #==== INSERT STATEMENT ====

@@ -26,10 +26,11 @@ class VideoStream:
                 break
 
         self.ReleaseVideoStream()
+        self.destroy()
 
     def destroy(self):
         # Closes all the frames
-        cv2.destroyAllWindows()      
+        cv2.destroyAllWindows()
 
 
 if __name__ == '__main__':
