@@ -47,7 +47,7 @@ def p_select(p):
     # )
     
     p[0] = (
-        f"from app.etl.DataSoruces.FlatFile import CsvDS\n"
+        f"from app.etl.etlCore import etl\n"
         f"DataOp = {{\n"
         f"        'COLUMNS':  {p[3]},\n"
         f"        'DISTINCT': {p[2]},\n"
@@ -55,10 +55,10 @@ def p_select(p):
         f"        'ORDER':    {p[8]},\n"
         f"        'LIMIT':    {p[9]},\n"   
         "       }\n"
-        f"csv = CsvDS('{p[5]}' , '{p[6]}', DataOp)\n"
-        f"csv.extract()\n"
-        f"csv.DataSourceFunctions['Coulmns']\n"
-        f"csv.load()\n"
+        f"DataSoruce = etl('{p[5]}' , '{p[6]}', DataOp)\n"
+        f"DataSoruce.ClassType.extract()\n"
+        f"DataSoruce.ClassType.Transform()\n"
+        f"DataSoruce.ClassType.load()\n"
 
     )
 
