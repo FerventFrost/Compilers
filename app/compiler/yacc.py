@@ -29,23 +29,7 @@ def p_select(p):
 
     p[5] = str(p[5]).replace("\\", "\\\\")
     p[6] = str(p[6]).replace("\\", "\\\\")
-    # p[0] = (
-    #     f"from app import etl\n"
-    #     f"\n"
-    #     f"data = etl.extract('{p[5]}')\n"
-    #     f"data = etl.transform(\n"
-    #     f"   data,\n"
-    #     f"   {{\n"
-    #     f"        'COLUMNS':  {p[3]},\n"
-    #     f"        'DISTINCT': {p[2]},\n"
-    #     f"        'FILTER':   {p[7]},\n"
-    #     f"        'ORDER':    {p[8]},\n"
-    #     f"        'LIMIT':    {p[9]},\n"
-    #     f"    }}\n"
-    #     f")\n"
-    #     f"etl.load(data, '{p[6]}')\n"
-    # )
-    
+
     p[0] = (
         f"from app.etl.etlCore import etl\n"
         f"DataOp = {{\n"
@@ -56,9 +40,9 @@ def p_select(p):
         f"        'LIMIT':    {p[9]},\n"   
         "       }\n"
         f"DataSoruce = etl('{p[5]}' , '{p[6]}', DataOp)\n"
-        f"DataSoruce.ClassType.extract()\n"
-        f"DataSoruce.ClassType.Transform()\n"
-        f"DataSoruce.ClassType.load()\n"
+        f"DataSoruce.ExtractData()\n"
+        # f"DataSoruce.Soruce.Transform()\n"
+        f"DataSoruce.LoadData()\n"
 
     )
 
@@ -78,6 +62,16 @@ def p_insert(p):
         f"data_destination = '{p[3]}'\n"
         f"data = pd.DataFrame(values, columns={p[4]})\n"
         f"etl.load(data, data_destination)\n"
+    )
+    p[0] = (
+        f"from app.etl.etlCore import etl\n"
+        f"import pandas as pd\n"
+        f"\n"
+        f"values = {p[6]}\n"
+        f"data_destination = '{p[3]}'\n"
+        f"data = pd.DataFrame(values, columns={p[4]})\n"
+        f"DataSource = elt(_destinationPath = data_destination)"
+
     )
 
 

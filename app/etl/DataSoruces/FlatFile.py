@@ -5,12 +5,12 @@ from app.etl.DataSoruces.DataSource import DataSource
 
 class CsvDS(DataSource):
     
-    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict) -> None:
-        super().__init__(_sorucePath, _destinationPath, _operation)
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
         DataSource.results = None
         
     def extract(self) -> pandas.DataFrame:
-        self.Data = pandas.read_csv(self.SourcePath)
+        return pandas.read_csv(self.SourcePath)
 
     def load(self) -> None:
         self.Data.to_csv(self.DestinationPath, mode='a')

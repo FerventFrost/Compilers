@@ -53,22 +53,15 @@ class compilerAggregationFunction:
 
 class DataSource:
     results = None
-    def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
+    def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict, _data) -> None:
         self.dfName = None
         self.SourcePath = _sorucePath.split("::")[1]
         self.DestinationPath = _destinationPath.split("::")[1]
         #if it is not working change it from none to ""
-        self.Data = None
+        self.Data = _data
         self.Operation = _operation
         self.Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
 
-        self.DataSourceFunctions = {
-            'Filter' : lambda : self.getFilter(),
-            'Coulmns' : lambda : self.getColumns(),
-            'Order' : lambda : self.getOrder(),
-            'Limit' : lambda : self.getLimit(),
-            'Distinct' : lambda : self.getDistinct(),
-        }
 
     def extract(self) -> None:
         raise NotImplementedError
