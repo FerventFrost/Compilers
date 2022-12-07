@@ -41,7 +41,7 @@ def p_select(p):
         "       }\n"
         f"DataSoruce = etl('{p[5]}' , '{p[6]}', DataOp)\n"
         f"DataSoruce.ExtractData()\n"
-        # f"DataSoruce.Soruce.Transform()\n"
+        f"DataSoruce.TransformData()\n"
         f"DataSoruce.LoadData()\n"
 
     )

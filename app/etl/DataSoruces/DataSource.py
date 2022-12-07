@@ -55,12 +55,10 @@ class DataSource:
     results = None
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict, _data) -> None:
         self.dfName = None
-        self.SourcePath = _sorucePath.split("::")[1]
-        self.DestinationPath = _destinationPath.split("::")[1]
-        #if it is not working change it from none to ""
+        self.SourcePath = _sorucePath
+        self.DestinationPath = _destinationPath
         self.Data = _data
         self.Operation = _operation
-        self.Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
 
 
     def extract(self) -> None:
@@ -74,7 +72,7 @@ class DataSource:
         if self.Operation['FILTER']:
             Data = self.getFilter()
         if self.Operation['COLUMNS']  != '__all__':
-            Data = self.getColumns
+            Data = self.getColumns()
         if self.Operation['DISTINCT']:
             Data = self.getDistinct()
         if self.Operation['ORDER']:
@@ -85,8 +83,9 @@ class DataSource:
 
     # return Filtered Data
     def getFilter(self):
+        Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
         filter = self.Operation['FILTER']['type']
-        return self.Agg.AggFunctions[filter]
+        return Agg.AggFunctions[filter]
 
     # return specific columns
     def getColumns(self) -> pandas.DataFrame:

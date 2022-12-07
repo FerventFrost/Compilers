@@ -12,24 +12,26 @@ class etl:
             "excel": lambda x,y,z,m: ExcelDS(x, y,z,m)
     }
     def __init__(self, _sorucePath:str=None, _destinationPath:str=None, _operation:dict=None) -> None:
-        self.SourcePath = _sorucePath
-        self.Destination = _destinationPath
+        self.SourcePath = _sorucePath.split('::')[1].lower()
+        self.SourceType = _sorucePath.split('::')[0].lower()
+        self.Destination = _destinationPath.split('::')[1].lower()
+        self.DestinationType = _destinationPath.split('::')[0].lower()
         self.Operation = _operation
         self.Data = None
 
+    # Get DataSoruce Object base one Source file type
     def __SoruceType(self) -> DataSource:
-        temp = self.SourcePath.split('::')[0].lower()
-        return self.ClassType[temp](self.SourcePath,self.Destination,self.Operation,None)
+        return self.ClassType[self.SourceType](self.SourcePath,self.Destination,self.Operation,None)
 
+    # Get DataSoruce Object base one Destination file type
     def __DestinationType(self) -> DataSource:
-        temp = self.Destination.split("::")[0].lower()
-        return self.ClassType[temp](self.SourcePath,self.Destination,self.Operation,self.Data)
+        return self.ClassType[self.DestinationType](self.SourcePath,self.Destination,self.Operation,self.Data)
 
     def ExtractData(self):
         self.Data = self.__SoruceType().extract()
 
-    # def TransformData(self):
-    #     self.Data = 
+    def TransformData(self):
+        self.Data = self.__DestinationType().Transform()
 
     def LoadData(self):
         self.__DestinationType().load()
