@@ -18,6 +18,10 @@ class CsvDS(DataSource):
 
 class HtmlDS(DataSource):
     
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         return pandas.read_html(self.SourcePath)
 
@@ -26,6 +30,10 @@ class HtmlDS(DataSource):
 
 class JsonDF(DataSource):
     
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         return pandas.read_json(self.SourcePath, orient='records')
     
@@ -34,6 +42,10 @@ class JsonDF(DataSource):
 
 class XmlDS(DataSource):
     
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         return pandas.read_xml(self.SourcePath)
 
@@ -42,6 +54,10 @@ class XmlDS(DataSource):
 
 class ExcelDS(DataSource):
     
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         return pandas.read_excel(self.SourcePath)
 
@@ -49,6 +65,10 @@ class ExcelDS(DataSource):
         self.Data.to_excel(self.DestinationPath) 
 
 class ConsolDS(DataSource):
+
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
 
     def load(self) -> None:
         pass

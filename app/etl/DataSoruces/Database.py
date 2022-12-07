@@ -4,6 +4,10 @@ from app.etl.DataSoruces.DataSource import DataSource
 
 class SqliteDS(DataSource):
    
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         DBSoruce = self.SourcePath.split('/')[0]
         tableName = self.SourcePath.split('/')[1]
@@ -20,6 +24,10 @@ class SqliteDS(DataSource):
 
 class MssqlDS(DataSource):
     
+    def __init__(self, _sorucePath: str, _destinationPath: str, _operation: dict, _data) -> None:
+        super().__init__(_sorucePath, _destinationPath, _operation, _data)
+        DataSource.results = None
+
     def extract(self) -> pandas.DataFrame:
         connection_string = connection_string.split("/")
         server_name = connection_string[0]
