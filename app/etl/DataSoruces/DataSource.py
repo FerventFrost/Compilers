@@ -5,12 +5,12 @@ import regex as re
 class compilerAggregationFunction:
     def __init__(self, _data:pandas.DataFrame, _filters:dict) -> None:
         
-        if _filters:
-            self.Data = _data
-            self.left = _filters['left']
-            self.right = _filters['right']
+        
+        self.Data = _data
+        self.left = _filters['left']
+        self.right = _filters['right']
 
-            self.AggFunctions = {
+        self.AggFunctions = {
             'or' : lambda : self.Or(),
             'and' : lambda : self.And(),
             'like' : lambda : self.Like(),
