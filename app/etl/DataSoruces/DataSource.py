@@ -2,6 +2,7 @@ import pandas
 import sqlalchemy
 import regex as re
 
+#Aggregation Functions that is used in SQL
 class compilerAggregationFunction:
     def __init__(self, _data:pandas.DataFrame, _filters:dict) -> None:
         
@@ -51,38 +52,41 @@ class compilerAggregationFunction:
     def NotEqual(self):
         return self.Data[self.Data[self.left] != self.right]
 
+#File extensions Parent Class
 class DataSource:
     results = None
-    def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict, _data) -> None:
-        self.dfName = None
-        self.SourcePath = _sorucePath
-        self.DestinationPath = _destinationPath
+    def __init__(self, _data:pandas.DataFrame = None) -> None:
+        #_data is None because it may extract data from external file
+        #Operation is assigned in transform function
+        self.Operation = dict()
         self.Data = _data
+
+
+    def extract(self, _sorucePath:str) -> pandas.DataFrame:
+        raise NotImplementedError
+
+    def load(self, _destinationPath:str) -> None:
+        raise NotImplementedError
+
+    # return data that is transformed
+    def transform(self, _operation:dict) -> pandas.DataFrame:
+        #default data if nothing change
+        transformedData = self.Data
         self.Operation = _operation
-
-
-    def extract(self) -> None:
-        raise NotImplementedError
-
-    def load(self) -> None:
-        raise NotImplementedError
-
-    def Transform(self) -> pandas.DataFrame:
-        Data = None
         if self.Operation['FILTER']:
-            Data = self.getFilter()
+            transformedData = self.getFilter()
         if self.Operation['COLUMNS']  != '__all__':
-            Data = self.getColumns()
+            transformedData = self.getColumns()
         if self.Operation['DISTINCT']:
-            Data = self.getDistinct()
+            transformedData = self.getDistinct()
         if self.Operation['ORDER']:
-            Data = self.getOrder()
+            transformedData = self.getOrder()
         if self.Operation['LIMIT']:
-            Data= self.getLimit()
-        return Data
+            transformedData= self.getLimit()
+        return transformedData
 
     # return Filtered Data
-    def getFilter(self):
+    def getFilter(self) -> pandas.DataFrame:
         Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
         filter = self.Operation['FILTER']['type']
         return Agg.AggFunctions[filter]
@@ -91,8 +95,9 @@ class DataSource:
     def getColumns(self) -> pandas.DataFrame:
         return self.Data.filter(items= self.Operation['COLUMNS'])
 
+    # remove duplications from data
     def getDistinct(self) -> pandas.DataFrame:
-        return self.Data.filter(items= self.Operation['COLUMNS'])
+        return self.Data.drop_duplicates()
 
     # sort data
     def getOrder(self) -> pandas.DataFrame:
@@ -102,4 +107,3 @@ class DataSource:
     # return data in a certain range
     def getLimit(self) -> pandas.DataFrame:
         return self.Data[:self.Operation['LIMIT']]
-
