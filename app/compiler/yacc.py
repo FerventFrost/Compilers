@@ -70,7 +70,7 @@ def p_insert(p):
         f"values = {p[6]}\n"
         f"data_destination = '{p[3]}'\n"
         f"data = pd.DataFrame(values, columns={p[4]})\n"
-        f"DataSource = elt(_destinationPath = data_destination)"
+        f"DataSource = elt(None, data_destination, None, data)"
 
     )
 
