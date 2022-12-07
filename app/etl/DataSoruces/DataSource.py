@@ -1,5 +1,4 @@
 import pandas
-import sqlalchemy
 import regex as re
 
 #Aggregation Functions that is used in SQL

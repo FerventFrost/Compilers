@@ -1,5 +1,4 @@
 import pandas
-import regex as re
 from app.etl.DataSoruces.DataSource import DataSource 
 
 
@@ -76,31 +75,3 @@ class ConsolDS(DataSource):
 
     def load(self, _destinationPath:str) -> None:
         pass
-
-
-# if __name__ == '__main__':
-#     DataOp = {
-#         'COLUMNS':  '__all__',
-#         'DISTINCT': False,
-#         'FILTER':   None,
-#         'ORDER':    None,
-#         'LIMIT':    None,
-#     }
-#     csv = CsvDS("csv::c:\\project\\annual-enterprisesv.csv" , "csv::c:\\project\\annual-enterprisesv-baher.csv", DataOp)
-#     csv.extract()
-#     csv.DataSourceFunctions['Coulmns']
-#     csv.load()
-
-
-# from app.etl.DataSoruces.DataSource.FlatFile import CsvDS
-# DataOp = {
-#         'COLUMNS':  '__all__',
-#         'DISTINCT': False,
-#         'FILTER':   None,
-#         'ORDER':    None,
-#         'LIMIT':    None,
-#        }
-# csv = CsvDS(csv::c:\\project\\annual-enterprisesv.csv , csv::c:\\project\\annual-enterprisesv-new.csv, DataOp)
-# csv.extract()
-# csv.DataSourceFunctions['Coulmns']
-# csv.load()
