@@ -1,5 +1,5 @@
 from app.compiler import parser
-from app.gui import ui
+from app.Controller import ui
 
 from datetime import datetime
 import time
