@@ -332,8 +332,8 @@ def p_run(p):
     'run : RUN DATASOURCE'
     p[2] = str(p[2]).replace("\\", "\\\\")
     p[0] = (
-        "from app.ComputerVision.Video import VideoStream\n"
-        f"StartStream = VideoStream('{p[2]}')\n"
-        "StartStream.DisplayVideo()\n"
+        "from app.BirdDetector.Detector import Detector\n"
+        f"StartStream = Detector()\n"
+        f"StartStream.readFile('{p[2]}')"
 
     )
