@@ -9,13 +9,15 @@ class etl:
             "html": lambda x: HtmlDS(x),
             "json": lambda x: JsonDF(x),
             "xml": lambda x: XmlDS(x),
-            "excel": lambda x: ExcelDS(x)
+            "excel": lambda x: ExcelDS(x),
+            "console" : lambda x: ConsolDS(x)
+            
     }
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
-        self.SourcePath = _sorucePath.split('::')[1].lower()
         self.SourceType = _sorucePath.split('::')[0].lower()
-        self.DestinationPath = _destinationPath.split('::')[1].lower()
+        self.SourcePath = _sorucePath.split('::')[1].lower()
         self.DestinationType = _destinationPath.split('::')[0].lower()
+        self.DestinationPath = _destinationPath.split('::')[1].lower() if _destinationPath.split('::')[0].lower() != "console" else None
         self.Operation = _operation
         self.Data = pandas.DataFrame()
 

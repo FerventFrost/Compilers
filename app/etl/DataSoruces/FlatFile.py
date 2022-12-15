@@ -74,4 +74,4 @@ class ConsolDS(DataSource):
         DataSource.results = None
 
     def load(self, _destinationPath:str) -> None:
-        pass
+        DataSource.results = self.Data
