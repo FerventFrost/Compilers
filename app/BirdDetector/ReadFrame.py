@@ -1,41 +1,58 @@
 import numpy as np
+from queue import Queue
 import cv2, tensorflow as tf
 from app.BirdDetector.Utility import DetectorUilityClass
 
 class DetectorReader(DetectorUilityClass):
 
-    def __init__(self) -> None:
+    def __init__(self, _queue:Queue) -> None:
         super.__init__()
+        self.Queue = _queue
+        
 
-    def getPath(self, source):
+    def initReader(self, source):
         Path = source.split("::")[1]
-        if source.split("::")[0] == 'mp4':
+        if source.split("::")[0] == 'video':
+            self.Queue.put("video")
             self.readVideoStream(cv2.VideoCapture(Path))
         else:
+            self.Queue.put("frame")
             self.readFrame(cv2.imread(Path))
+            self.readFrame(None)
 
     def readVideoStream(self, videoStream):
         while(True):
             ret, frame = videoStream.read()
             if not ret or cv2.waitKey(1) & 0xFF == ord('q'):
+                self.readFrame(None)
                 break
+            self.readFrame(frame)
 
-            self.readFrame(frame, True)
-        cv2.destroyAllWindows()
+    def readFrame(self, frame):
+        if frame is None:
+            self.Queue.put(None)
 
-    def readFrame(self, frame, isVideo = False):
         frame = cv2.resize(frame, (1024,1124))
-        detectedImage = self.detectBird(frame)
-        cv2.imshow("Result", detectedImage)
-        if not isVideo:
-            cv2.waitKey(0)
-            cv2.destroyAllWindows()
-
+        self.Queue.put(frame)
 
 class DetectorDetect(DetectorUilityClass):
 
-    def __init__(self) -> None:
+    def __init__(self, _readerQueue:Queue, _writerQueue:Queue) -> None:
         super().__init__()
+        self.ReaderQueue = _readerQueue
+        self.WriterQueue = _writerQueue
+
+    def initDetector(self):
+        while True:
+            frame = self.ReaderQueue.get()
+            if frame is None:
+                self.WriterQueue.put(None)
+                break
+            
+            if isinstance(frame, str):
+                self.WriterQueue.put(frame)
+            else:
+                self.WriterQueue.put(self.detectBird(frame))
 
     def detectBird(self, image):
         imH, imW, _ = image.shape
@@ -68,5 +85,24 @@ class DetectorDetect(DetectorUilityClass):
 
 class DetectorWriter(DetectorUilityClass):
 
-    def __init__(self) -> None:
+    def __init__(self, _queue:Queue) -> None:
         super().__init__()
+        self.Queue = _queue
+
+    def initWriter(self):
+        if self.Queue.get() == "frame":
+            self.viewFrame()
+        else:
+            self.viewVideo()
+        cv2.destroyAllWindows()
+
+    def viewFrame(self):
+        cv2.imshow("Result", self.Queue.get())
+        cv2.waitKey(0)
+
+    def viewVideo(self):
+        while True:
+            frame = self.Queue.get()
+            if frame is None:
+                break
+            cv2.imshow("Result", frame)
