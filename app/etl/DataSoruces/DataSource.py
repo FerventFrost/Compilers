@@ -60,8 +60,8 @@ class DataSource:
         #Operation is assigned in transform function
         self.Operation = dict()
         self.Data = _data
-        if _data is not None:
-            self.Data = _data.get()
+        self.isThread = _isThread
+        self.TargetMethod = None
 
 
     def extract(self, _sorucePath:str) -> pandas.DataFrame:
@@ -77,41 +77,45 @@ class DataSource:
     # return data that is transformed
     def transform(self, _operation:dict) -> pandas.DataFrame:
         #default data if nothing change
+        self.TargetMethod = "transform"
         q = Queue()
-        transformedData = self.Data
+        transformedData = self.QueueData()
         self.Operation = _operation
         if self.Operation['FILTER']:
-            transformedData = self.getFilter()
+            transformedData = self.getFilter(transformedData)
         if self.Operation['COLUMNS']  != '__all__':
-            transformedData = self.getColumns()
+            transformedData = self.getColumns(transformedData)
         if self.Operation['DISTINCT']:
-            transformedData = self.getDistinct()
+            transformedData = self.getDistinct(transformedData)
         if self.Operation['ORDER']:
-            transformedData = self.getOrder()
+            transformedData = self.getOrder(transformedData)
         if self.Operation['LIMIT']:
-            transformedData= self.getLimit()
+            transformedData= self.getLimit(transformedData)
         q.put(transformedData)
         return q
 
     # return Filtered Data
-    def getFilter(self) -> pandas.DataFrame:
-        Agg = compilerAggregationFunction(self.Data, self.Operation['FILTER'])
+    def getFilter(self, data) -> pandas.DataFrame:
+        Agg = compilerAggregationFunction(data, self.Operation['FILTER'])
         filter = self.Operation['FILTER']['type']
         return Agg.AggFunctions[filter]
 
     # return specific columns
-    def getColumns(self) -> pandas.DataFrame:
-        return self.Data.filter(items= self.Operation['COLUMNS'])
+    def getColumns(self, data) -> pandas.DataFrame:
+        return data.filter(items= self.Operation['COLUMNS'])
 
     # remove duplications from data
-    def getDistinct(self) -> pandas.DataFrame:
-        return self.Data.drop_duplicates()
+    def getDistinct(self, data) -> pandas.DataFrame:
+        return data.drop_duplicates()
 
     # sort data
-    def getOrder(self) -> pandas.DataFrame:
+    def getOrder(self, data) -> pandas.DataFrame:
         columnn = self.Operation['ORDER'][0]
-        return self.Data.sort_values(columnn, ascending= self.Operation['ORDER'][1] == 'ASC')
+        return data.sort_values(columnn, ascending= self.Operation['ORDER'][1] == 'ASC')
 
     # return data in a certain range
-    def getLimit(self) -> pandas.DataFrame:
-        return self.Data[:self.Operation['LIMIT']]
+    def getLimit(self, data) -> pandas.DataFrame:
+        return data[:self.Operation['LIMIT']]
+
+    def QueueData(self):
+        return self.Data.get()

@@ -11,8 +11,8 @@ class etl:
             "json": lambda x, y: JsonDF(x,y),
             "xml": lambda x, y: XmlDS(x,y),
             "excel": lambda x, y: ExcelDS(x,y),
-            "console" : lambda x, y: ConsolDS(x,y)
-            
+            "video": lambda x,y : BirdDetector(x,y),
+            "console" : lambda x, y: ConsolDS(x,y)      
     }
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
         self.isThread = False
@@ -29,6 +29,8 @@ class etl:
 
     # Get DataSoruce Object base one Destination file type
     def __DestinationType(self, _data = None) -> DataSource:
+        if self.SourceType == "video":
+            return BirdDetector(_data, self.isThread)
         return self.ClassType[self.DestinationType](_data, self.isThread)
 
     def ExtractData(self):
@@ -36,7 +38,7 @@ class etl:
         self.ExtrData = self.ExtrClass.extract(self.SourcePath)
 
     def TransformData(self):
-        self.TransClass = self.__DestinationType(self.ExtrData)
+        self.TransClass = self.__SoruceType(self.ExtrData)
         self.TransData = self.TransClass.transform(self.Operation)
 
     def LoadData(self):
@@ -47,9 +49,9 @@ class etl:
         self.isThread = True
     
     def StartThread(self):
-        pass
-    
-    def EndThread(self):
-        pass
+        if self.SourceType == "video":
+            self.ExtrClass.start()
+            self.TransClass.start()
+            self.LoadClass.start()
 
 

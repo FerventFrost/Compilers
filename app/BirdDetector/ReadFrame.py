@@ -6,54 +6,46 @@ from app.BirdDetector.Utility import DetectorUilityClass
 class DetectorReader(DetectorUilityClass):
 
     def __init__(self) -> None:
-        super.__init__()
+        super().__init__()
         self.Queue = Queue()
 
     def setSource(self, source):
         self.Source = source
 
-    def returnQueue(self):
-        return self.Queue
-
     def initReader(self):
-        Path = self.Source.split("::")[1]
-        if self.Source.split("::")[0] == 'video':
-            self.Queue.put("video")
-            self.readVideoStream(cv2.VideoCapture(Path))
-        else:
-            self.Queue.put("frame")
-            self.readFrame(cv2.imread(Path))
-            self.readFrame(None)
-
-    def run(self):
-        self.initReader()
+        self.Queue.put("video")
+        self.readVideoStream(cv2.VideoCapture(self.Source))
 
     def readVideoStream(self, videoStream):
         while(True):
             ret, frame = videoStream.read()
-            if not ret or cv2.waitKey(1) & 0xFF == ord('q'):
-                self.readFrame(None)
+            if not ret:
+                self.Queue.put(None)
                 break
             self.readFrame(frame)
 
     def readFrame(self, frame):
-        if frame is None:
-            self.Queue.put(None)
-
         frame = cv2.resize(frame, (1024,1124))
         self.Queue.put(frame)
 
+    def returnQueue(self):
+        return self.Queue
+        
+    def run(self):
+        self.initReader()  
+      
 class DetectorDetect(DetectorUilityClass):
 
     def __init__(self, _readerQueue:Queue) -> None:
         super().__init__()
         self.ReaderQueue = _readerQueue
         self.WriterQueue = Queue()
-
-    def returnQueue(self):
-        return self.WriterQueue
-    
+        self.readCocoClass(self.classespath)
+        self.downloadModel(self.modelURL)
+        self.loadModel()
+  
     def initDetect(self):
+        number = 0
         while True:
             frame = self.ReaderQueue.get()
             if frame is None:
@@ -65,17 +57,13 @@ class DetectorDetect(DetectorUilityClass):
             else:
                 self.WriterQueue.put(self.detectBird(frame))
 
-    def run(self):
-        self.initDetect()
-
     def detectBird(self, image):
         imH, imW, _ = image.shape
-        detections = self.Model(self.__formatTensorInput(image))
-        dataProperties = self.__detectedObjectData(detections)
+        detections = self.Model(self.formatTensorInput(image))
+        dataProperties = self.detectedObjectData(detections)
 
         if len(dataProperties[1]) != 0:
             image = self.labelDetectedObject(image, dataProperties, imW, imH)
-
         return image
         
     def labelDetectedObject(self, image, dataProperties, w, h):
@@ -86,16 +74,21 @@ class DetectorDetect(DetectorUilityClass):
             Label = self.ClassList[dataProperties[2][i]]
             Color = self.ColorList[dataProperties[2][i]]
 
-            bPostion = self.__calcBBox(tuple(dataProperties[3][i].tolist()), w, h)
+            bPostion = self.calcBBox(tuple(dataProperties[0][i].tolist()), w, h)
 
-            if self.__isTargetObject('bird', Label):
-                self.__makeRectAroundObject(image, Color, bPostion)
-                self.__LabelObject(image, f"{Label}: {Confidence}", Color, bPostion[:2])
+            if self.isTargetObject('bird', Label):
+                self.makeRectAroundObject(image, Color, bPostion)
+                self.LabelObject(image, f"{Label}: {Confidence}", Color, bPostion)
                 BirdNumber += 1
 
-        self.__LabelObject(image, f"Birds Count {BirdNumber}", (200, 10, 191), (50,50))
+        self.LabelObject(image, f"Birds Count {BirdNumber}", (200, 10, 191), (50, 50))
         return image
-        
+
+    def returnQueue(self):
+        return self.WriterQueue
+
+    def run(self):
+        self.initDetect()
 
 class DetectorWriter(DetectorUilityClass):
 
@@ -103,18 +96,12 @@ class DetectorWriter(DetectorUilityClass):
         super().__init__()
         self.Queue = _queue
 
-    def returnQueue(self):
-        return self.Queue
-
     def initWriter(self):
         if self.Queue.get() == "frame":
             self.viewFrame()
         else:
             self.viewVideo()
         cv2.destroyAllWindows()
-
-    def run(self):
-        self.initWriter()
 
     def viewFrame(self):
         cv2.imshow("Result", self.Queue.get())
@@ -124,5 +111,14 @@ class DetectorWriter(DetectorUilityClass):
         while True:
             frame = self.Queue.get()
             if frame is None:
+                self.Queue.put(None)
+                break
+            if cv2.waitKey(40) & 0xFF == ord('q'):
                 break
             cv2.imshow("Result", frame)
+
+    def returnQueue(self):
+        return self.Queue
+
+    def run(self):
+        self.initWriter()

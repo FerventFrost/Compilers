@@ -10,13 +10,17 @@ class CsvDS(DataSource):
         DataSource.results = None
         
     def extract(self, _sorucePath:str) -> pandas.DataFrame:
+        self.TargetMethod = "extract"
         q = Queue()
-        q.put(pandas.read_csv(_sorucePath))
+        if not self.isThread:
+            q.put(pandas.read_csv(_sorucePath))
         return q
 
     def load(self, _destinationPath:str) -> None:
-        self.Data.to_csv(_destinationPath, mode='a')
-        DataSource.results = 'Execution Done!'
+        self.TargetMethod = "load"
+        if not self.isThread:
+            self.QueueData().to_csv(_destinationPath, mode='a')
+            DataSource.results = 'Execution Done!'
 
 class HtmlDS(DataSource):
     
@@ -30,7 +34,7 @@ class HtmlDS(DataSource):
         return q
 
     def load(self, _destinationPath:str) -> None:
-        self.Data.to_html(_destinationPath)
+        self.QueueData().to_html(_destinationPath)
         DataSource.results = 'Execution Done!'
 
 class JsonDF(DataSource):
@@ -45,7 +49,7 @@ class JsonDF(DataSource):
         return q
     
     def load(self, _destinationPath:str) -> None:
-        self.Data.to_json(_destinationPath)
+        self.QueueData().to_json(_destinationPath)
         DataSource.results = 'Execution Done!'
 
 class XmlDS(DataSource):
@@ -60,7 +64,7 @@ class XmlDS(DataSource):
         return q
 
     def load(self, _destinationPath:str) -> None:
-        self.Data.to_xml(_destinationPath)
+        self.QueueData().to_xml(_destinationPath)
         DataSource.results = 'Execution Done!'
 
 class ExcelDS(DataSource):
@@ -75,7 +79,7 @@ class ExcelDS(DataSource):
         return q
 
     def load(self, _destinationPath:str) -> None:
-        self.Data.to_excel(_destinationPath) 
+        self.QueueData().to_excel(_destinationPath) 
         DataSource.results = 'Execution Done!'
 
 class ConsolDS(DataSource):
@@ -85,4 +89,4 @@ class ConsolDS(DataSource):
         DataSource.results = None
 
     def load(self, _destinationPath:str) -> None:
-        DataSource.results = self.Data
+        DataSource.results = self.QueueData()

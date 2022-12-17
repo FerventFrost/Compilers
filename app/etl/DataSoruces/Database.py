@@ -20,7 +20,7 @@ class SqliteDS(DataSource):
         tableName = _destinationPath.split('/')[1]
 
         sqlite_engine = sqlalchemy.create_engine(f'sqlite:///{DBDestination}')
-        self.Data.to_sql(tableName, sqlite_engine, if_exists='append', index=False)
+        self.QueueData().to_sql(tableName, sqlite_engine, if_exists='append', index=False)
 
 class MssqlDS(DataSource):
     
@@ -47,4 +47,4 @@ class MssqlDS(DataSource):
         table_name = connection_string[2]
 
         mssql_engine = sqlalchemy.create_engine(f'mssql+pyodbc://{server_name}/{db_name}?trusted_connection=yes&driver=SQL+Server+Native+Client+11.0')
-        self.Data.to_sql(table_name, mssql_engine, if_exists='append', index=False)
+        self.QueueData().to_sql(table_name, mssql_engine, if_exists='append', index=False)
