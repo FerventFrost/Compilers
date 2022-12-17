@@ -54,7 +54,7 @@ class compilerAggregationFunction:
 #File extensions Parent Class
 class DataSource:
     results = None
-    def __init__(self, _data:pandas.DataFrame = None) -> None:
+    def __init__(self, _data:pandas.DataFrame = None, _isThread = False) -> None:
         #_data is None because it may extract data from external file
         #Operation is assigned in transform function
         self.Operation = dict()

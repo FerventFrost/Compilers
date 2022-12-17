@@ -1,5 +1,6 @@
 from app.etl.DataSoruces.FlatFile import *
 from app.etl.DataSoruces.Database import *
+from app.etl.DataSoruces.BinaryFile import BirdDetector
 
 class etl:
     ClassType = {
@@ -14,6 +15,7 @@ class etl:
             
     }
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
+        self.isThread = False
         self.SourceType = _sorucePath.split('::')[0].lower()
         self.SourcePath = _sorucePath.split('::')[1].lower()
         self.DestinationType = _destinationPath.split('::')[0].lower()
@@ -22,18 +24,27 @@ class etl:
         self.Data = pandas.DataFrame()
 
     # Get DataSoruce Object base one Source file type
-    def __SoruceType(self) -> DataSource:
-        return self.ClassType[self.SourceType](None)
+    def __SoruceType(self, _data = None) -> DataSource:
+        return self.ClassType[self.SourceType](_data, self.isThread)
 
     # Get DataSoruce Object base one Destination file type
-    def __DestinationType(self) -> DataSource:
-        return self.ClassType[self.DestinationType](self.Data)
+    def __DestinationType(self, _data = None) -> DataSource:
+        return self.ClassType[self.DestinationType](_data, self.isThread)
 
     def ExtractData(self):
-        self.Data = self.__SoruceType().extract(self.SourcePath)
+        self.ExtrData = self.__SoruceType().extract(self.SourcePath)
 
     def TransformData(self):
-        self.Data = self.__DestinationType().transform(self.Operation)
+        self.TransData = self.__DestinationType(self.ExtrData).transform(self.Operation)
 
     def LoadData(self):
-        self.__DestinationType().load(self.DestinationPath)
+        self.__DestinationType(self.TransData).load(self.DestinationPath)
+
+    def RunCode(self):
+        pass
+
+    def StartThread(self):
+        self.isThread = True
+
+    def EndThread(self):
+        pass

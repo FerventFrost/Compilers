@@ -1,18 +1,23 @@
 import numpy as np
 from queue import Queue
-import cv2, tensorflow as tf
+import cv2
 from app.BirdDetector.Utility import DetectorUilityClass
 
 class DetectorReader(DetectorUilityClass):
 
-    def __init__(self, _queue:Queue) -> None:
+    def __init__(self) -> None:
         super.__init__()
-        self.Queue = _queue
+        self.Queue = Queue()
         
+    def returnQueue(self):
+        return self.Queue
 
     def initReader(self, source):
-        Path = source.split("::")[1]
-        if source.split("::")[0] == 'video':
+        self.Source = source
+
+    def run(self):
+        Path = self.Source.split("::")[1]
+        if self.Source.split("::")[0] == 'video':
             self.Queue.put("video")
             self.readVideoStream(cv2.VideoCapture(Path))
         else:
@@ -37,12 +42,15 @@ class DetectorReader(DetectorUilityClass):
 
 class DetectorDetect(DetectorUilityClass):
 
-    def __init__(self, _readerQueue:Queue, _writerQueue:Queue) -> None:
+    def __init__(self, _readerQueue:Queue) -> None:
         super().__init__()
         self.ReaderQueue = _readerQueue
-        self.WriterQueue = _writerQueue
+        self.WriterQueue = Queue()
 
-    def initDetector(self):
+    def returnQueue(self):
+        return self.WriterQueue
+    
+    def run(self):
         while True:
             frame = self.ReaderQueue.get()
             if frame is None:
@@ -85,11 +93,14 @@ class DetectorDetect(DetectorUilityClass):
 
 class DetectorWriter(DetectorUilityClass):
 
-    def __init__(self, _queue:Queue) -> None:
+    def __init__(self) -> None:
         super().__init__()
-        self.Queue = _queue
+        self.Queue = Queue()
 
-    def initWriter(self):
+    def returnQueue(self):
+        return self.Queue
+
+    def run(self):
         if self.Queue.get() == "frame":
             self.viewFrame()
         else:
