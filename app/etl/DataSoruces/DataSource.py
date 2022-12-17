@@ -60,7 +60,7 @@ class DataSource:
         #Operation is assigned in transform function
         self.Operation = dict()
         self.Data = _data
-        self.isThread = _isThread
+        self.isThread = False
         self.TargetMethod = None
 
 
