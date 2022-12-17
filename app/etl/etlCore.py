@@ -4,14 +4,14 @@ from app.etl.DataSoruces.BinaryFile import BirdDetector
 
 class etl:
     ClassType = {
-            "csv": lambda x: CsvDS(x),
-            "sqlite": lambda x: SqliteDS(x),
-            "mssql": lambda x: MssqlDS(x),
-            "html": lambda x: HtmlDS(x),
-            "json": lambda x: JsonDF(x),
-            "xml": lambda x: XmlDS(x),
-            "excel": lambda x: ExcelDS(x),
-            "console" : lambda x: ConsolDS(x)
+            "csv": lambda x, y: CsvDS(x,y),
+            "sqlite": lambda x, y: SqliteDS(x,y),
+            "mssql": lambda x, y: MssqlDS(x,y),
+            "html": lambda x, y: HtmlDS(x,y),
+            "json": lambda x, y: JsonDF(x,y),
+            "xml": lambda x, y: XmlDS(x,y),
+            "excel": lambda x, y: ExcelDS(x,y),
+            "console" : lambda x, y: ConsolDS(x,y)
             
     }
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
@@ -32,19 +32,24 @@ class etl:
         return self.ClassType[self.DestinationType](_data, self.isThread)
 
     def ExtractData(self):
-        self.ExtrData = self.__SoruceType().extract(self.SourcePath)
+        self.ExtrClass = self.__SoruceType()
+        self.ExtrData = self.ExtrClass.extract(self.SourcePath)
 
     def TransformData(self):
-        self.TransData = self.__DestinationType(self.ExtrData).transform(self.Operation)
+        self.TransClass = self.__DestinationType(self.ExtrData)
+        self.TransData = self.TransClass.transform(self.Operation)
 
     def LoadData(self):
-        self.__DestinationType(self.TransData).load(self.DestinationPath)
+        self.LoadClass = self.__DestinationType(self.TransData)
+        self.LoadClass.load(self.DestinationPath)
 
-    def RunCode(self):
-        pass
-
-    def StartThread(self):
+    def SetupThread(self):
         self.isThread = True
-
+    
+    def StartThread(self):
+        pass
+    
     def EndThread(self):
         pass
+
+

@@ -1,11 +1,13 @@
 import os
 import numpy as np
+import threading
 import cv2, tensorflow as tf
 from tensorflow.python.keras.utils.data_utils import get_file
 
-class DetectorUilityClass:
+class DetectorUilityClass(threading.Thread):
 
     def __init__(self) -> None:
+        threading.Thread.__init__(self)
         np.random.seed(123)
         classespath = './app/BirdDetector/coco.names'
         modelURL = 'http://download.tensorflow.org/models/object_detection/tf2/20200711/ssd_mobilenet_v2_320x320_coco17_tpu-8.tar.gz'

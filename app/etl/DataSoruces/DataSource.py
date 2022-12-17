@@ -1,5 +1,6 @@
 import pandas
 import regex as re
+from queue import Queue
 
 #Aggregation Functions that is used in SQL
 class compilerAggregationFunction:
@@ -54,11 +55,13 @@ class compilerAggregationFunction:
 #File extensions Parent Class
 class DataSource:
     results = None
-    def __init__(self, _data:pandas.DataFrame = None, _isThread = False) -> None:
+    def __init__(self, _data:Queue[pandas.DataFrame] = None, _isThread = False) -> None:
         #_data is None because it may extract data from external file
         #Operation is assigned in transform function
         self.Operation = dict()
         self.Data = _data
+        if _data is not None:
+            self.Data = _data.get()
 
 
     def extract(self, _sorucePath:str) -> pandas.DataFrame:
@@ -66,10 +69,15 @@ class DataSource:
 
     def load(self, _destinationPath:str) -> None:
         raise NotImplementedError
+    
+    #For threads
+    def run(self):
+        raise NotImplementedError
 
     # return data that is transformed
     def transform(self, _operation:dict) -> pandas.DataFrame:
         #default data if nothing change
+        q = Queue()
         transformedData = self.Data
         self.Operation = _operation
         if self.Operation['FILTER']:
@@ -82,7 +90,8 @@ class DataSource:
             transformedData = self.getOrder()
         if self.Operation['LIMIT']:
             transformedData= self.getLimit()
-        return transformedData
+        q.put(transformedData)
+        return q
 
     # return Filtered Data
     def getFilter(self) -> pandas.DataFrame:

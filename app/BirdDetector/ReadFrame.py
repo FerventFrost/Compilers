@@ -8,14 +8,14 @@ class DetectorReader(DetectorUilityClass):
     def __init__(self) -> None:
         super.__init__()
         self.Queue = Queue()
-        
+
+    def setSource(self, source):
+        self.Source = source
+
     def returnQueue(self):
         return self.Queue
 
-    def initReader(self, source):
-        self.Source = source
-
-    def run(self):
+    def initReader(self):
         Path = self.Source.split("::")[1]
         if self.Source.split("::")[0] == 'video':
             self.Queue.put("video")
@@ -24,6 +24,9 @@ class DetectorReader(DetectorUilityClass):
             self.Queue.put("frame")
             self.readFrame(cv2.imread(Path))
             self.readFrame(None)
+
+    def run(self):
+        self.initReader()
 
     def readVideoStream(self, videoStream):
         while(True):
@@ -50,7 +53,7 @@ class DetectorDetect(DetectorUilityClass):
     def returnQueue(self):
         return self.WriterQueue
     
-    def run(self):
+    def initDetect(self):
         while True:
             frame = self.ReaderQueue.get()
             if frame is None:
@@ -61,6 +64,9 @@ class DetectorDetect(DetectorUilityClass):
                 self.WriterQueue.put(frame)
             else:
                 self.WriterQueue.put(self.detectBird(frame))
+
+    def run(self):
+        self.initDetect()
 
     def detectBird(self, image):
         imH, imW, _ = image.shape
@@ -93,19 +99,22 @@ class DetectorDetect(DetectorUilityClass):
 
 class DetectorWriter(DetectorUilityClass):
 
-    def __init__(self) -> None:
+    def __init__(self, _queue) -> None:
         super().__init__()
-        self.Queue = Queue()
+        self.Queue = _queue
 
     def returnQueue(self):
         return self.Queue
 
-    def run(self):
+    def initWriter(self):
         if self.Queue.get() == "frame":
             self.viewFrame()
         else:
             self.viewVideo()
         cv2.destroyAllWindows()
+
+    def run(self):
+        self.initWriter()
 
     def viewFrame(self):
         cv2.imshow("Result", self.Queue.get())
