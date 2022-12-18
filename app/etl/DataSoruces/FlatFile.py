@@ -19,7 +19,7 @@ class CsvDS(DataSource):
     def load(self, _destinationPath:str) -> None:
         self.TargetMethod = "load"
         if not self.isThread:
-            self.QueueData().to_csv(_destinationPath, mode='a')
+            self.QueueData().to_csv(_destinationPath, mode='a',index=False)
             DataSource.results = 'Execution Done!'
 
 class HtmlDS(DataSource):

@@ -63,7 +63,6 @@ class DataSource:
         self.isThread = False
         self.TargetMethod = None
 
-
     def extract(self, _sorucePath:str) -> pandas.DataFrame:
         raise NotImplementedError
 
@@ -98,7 +97,8 @@ class DataSource:
     def getFilter(self, data) -> pandas.DataFrame:
         Agg = compilerAggregationFunction(data, self.Operation['FILTER'])
         filter = self.Operation['FILTER']['type']
-        return Agg.AggFunctions[filter]
+        temp = Agg.AggFunctions[filter]
+        return temp
 
     # return specific columns
     def getColumns(self, data) -> pandas.DataFrame:

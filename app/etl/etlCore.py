@@ -1,6 +1,7 @@
 from app.etl.DataSoruces.FlatFile import *
 from app.etl.DataSoruces.Database import *
 from app.etl.DataSoruces.BinaryFile import BirdDetector
+from app.etl.DataSoruces.Folder import FolderDS
 
 class etl:
     ClassType = {
@@ -12,6 +13,7 @@ class etl:
             "xml": lambda x, y: XmlDS(x,y),
             "excel": lambda x, y: ExcelDS(x,y),
             "video": lambda x,y : BirdDetector(x,y),
+            "folder": lambda x,y: FolderDS(x,y),
             "console" : lambda x, y: ConsolDS(x,y)      
     }
     def __init__(self, _sorucePath:str, _destinationPath:str, _operation:dict) -> None:
@@ -48,6 +50,7 @@ class etl:
     def SetupThread(self):
         self.isThread = True
     
+    #thread is implemented only in for video (Detector)
     def StartThread(self):
         if self.SourceType == "video":
             self.ExtrClass.start()
