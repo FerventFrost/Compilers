@@ -7,4 +7,4 @@ if __name__ == "__main__":
     d = FolderDS(q)
     q = d.transform(_operation)
     d.noMotion(q.get())
-    d.to_df()
+    d.to_df(["time", "head", "tail", "wing" ,"leg","is motion"])

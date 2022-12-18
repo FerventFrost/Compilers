@@ -20,20 +20,23 @@ class FolderDS:
         obj = Extract()
         q = Queue()
         data = self.returnQueue()
-
+        new_operation = None
         for frame in data:
             if _operation['COLUMNS']  != '__all__':  
                 list.append(obj.extract(_operation['COLUMNS'] ,frame))
             else:
-                _operation = ["time", "head", "tail", "wing" ,"leg"]
+                new_operation = ["time", "head", "tail", "wing" ,"leg"]
                 list.append(obj.extract_all(frame))
         self.noMotion(list)
-        df =  self.to_df(_operation)
+        df =  self.to_df(_operation, new_operation)
         q.put(df)
         return q
 
-    def to_df(self, _operation):
-        df = pandas.DataFrame(self.Dict, columns=_operation['COLUMNS'])
+    def to_df(self, _operation, new):
+        if new != None:
+            df = pandas.DataFrame(self.Dict, columns=new)
+        else:
+            df = pandas.DataFrame(self.Dict, columns=_operation['COLUMNS'])
         df.sort_values(by=["time"], inplace=True)
         return df
 
