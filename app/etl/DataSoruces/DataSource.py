@@ -97,7 +97,7 @@ class DataSource:
     def getFilter(self, data) -> pandas.DataFrame:
         Agg = compilerAggregationFunction(data, self.Operation['FILTER'])
         filter = self.Operation['FILTER']['type']
-        temp = Agg.AggFunctions[filter]
+        temp = Agg.AggFunctions[filter]()
         return temp
 
     # return specific columns
