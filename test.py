@@ -6,5 +6,4 @@ if __name__ == "__main__":
     q = f.extract("C:\\Project\\results 3")
     d = FolderDS(q)
     q = d.transform(_operation)
-    d.noMotion(q.get())
-    d.to_df(["time", "head", "tail", "wing" ,"leg","is motion"])
+    q.get().to_csv("C:\\Project\\dfCSV.csv")
