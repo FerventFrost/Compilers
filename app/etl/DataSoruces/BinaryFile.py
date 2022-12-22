@@ -1,7 +1,8 @@
 from app.BirdDetector.ReadFrame import *
 
 class BirdDetector:
-    
+    '''Bird Detector interface that simplify my code
+    '''
     def __init__(self, _data = None, _isThread = False) -> None:
         self.Data = _data
         self.isThread = _isThread
