@@ -1,0 +1,39 @@
+select year from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv];
+
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv];
+
+equal:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year == 2011;
+
+not equal:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year <> 2011;
+
+less than:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year < 2013;
+
+less than or equal:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year <= 2013;
+
+greater than:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year > 2013;
+
+greater than or equal:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year >= 2013;
+
+or:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] where year == 2011 or year == 2015;
+
+first N number:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv]  limit 10 ;
+
+order by desc:
+select * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] order by year desc;
+
+Distinct (drop duplicates) and order them by year in desc order:
+select distinct * from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] order by year desc;
+
+Distinct year column (drop duplicates) and order them by year in desc order:
+select distinct year from [csv::C:\Project\annual-enterprisesv.csv] into [csv::C:\Project\annual-enterprisesv-new.csv] order by year desc;
+
+
+run [C:\Baher\FiddleStick.mp4]

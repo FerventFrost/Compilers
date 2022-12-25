@@ -69,6 +69,8 @@ Here is a diagram that helps you understand the flow of the app:
 
 ### Write Reqs
 
-1. pip intsall pipreqs
-   in the same project folder write:
-2. pipreqs .
+1. pip intsall pipreqs.
+
+in the same project folder write:
+
+2. pipreqs

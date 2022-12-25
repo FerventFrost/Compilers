@@ -20,14 +20,24 @@ class compilerAggregationFunction:
             '<' : lambda : self.LessThan(),
             '<=' : lambda : self.LessOrEqual(),
             '==' : lambda : self.Equal(),
-            '!=' : lambda : self.NotEqual(),
+            '<>' : lambda : self.NotEqual(),
         }
 
+    def getLeftandRight(self):
+        LeftAgg = compilerAggregationFunction(self.Data, self.left)
+        RightAgg = compilerAggregationFunction(self.Data, self.right)
+        _operationLeft = self.left["type"]
+        _operationRight = self.right["type"]
+        self.left = LeftAgg.AggFunctions[_operationLeft]()
+        self.right = RightAgg.AggFunctions[_operationRight]()
+
     def Or(self):
+        self.getLeftandRight()
         self.Data = pandas.concat([self.left, self.right])
         return self.Data[~ self.Data.index.duplicated(keep='first')]
 
     def And(self):
+        self.getLeftandRight()
         self.Data = pandas.merge([self.left, self.right])
         return self.Data[~ self.Data.index.duplicated(keep='first')]
 
